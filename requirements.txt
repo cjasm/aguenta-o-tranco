@@ -1,3 +1,5 @@
 Django==4.0.6
 django-model-utils==4.2.0
+djangorestframework==3.13.1
+djangorestframework-simplejwt==5.2.0
 python-decouple==3.6
