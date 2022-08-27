@@ -8,10 +8,15 @@ class MyFoodUser(HttpUser):
     faker = faker.Faker()
 
     def on_start(self):
-        logging.info("Estou iniciando o meu usuário")
-
-    def on_stop(self):
-        logging.info("Estou encerrando o meu usuário")
+        req = self.client.post(
+            '/api/token/',
+            json={
+                'username': 'client',
+                'password': 'labcodes123'
+            }
+        )
+        token = req.json().get('access')
+        self.client.headers.update({'Authorization': f'Bearer {token}'})
 
     @task(3)
     def list_meals(self):
