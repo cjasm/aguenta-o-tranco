@@ -11,6 +11,16 @@ class AnonymousUser(HttpUser):
     def list_meals(self):
         self.client.get('/api/meals/')
 
+    @task
+    def create_meals_unauthorized(self):
+        self.client.request_name = 'Unauthorized'
+        with self.client.post('/api/meals/', json={}, catch_response=True) as req:
+            if req.status_code != 401:
+                req.failure('Response with code status not expected')
+                return
+
+            req.success()
+
 
 class MyFoodUser(HttpUser):
     wait_time = between(1, 5)
