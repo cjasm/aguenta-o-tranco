@@ -1,6 +1,15 @@
-from locust import HttpUser, between, task
+from locust import HttpUser, between, constant, task
 import logging
 import faker
+
+
+class AnonymousUser(HttpUser):
+    wait_time = constant(1)
+    weight = 3
+
+    @task(3)
+    def list_meals(self):
+        self.client.get('/api/meals/')
 
 
 class MyFoodUser(HttpUser):
