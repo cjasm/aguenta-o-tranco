@@ -1,15 +1,14 @@
-from locust import HttpUser, between, constant, task
+from locust import HttpUser, between, constant, task, TaskSet
 import logging
 import faker
 
 
-class AnonymousUser(HttpUser):
-    wait_time = constant(1)
-    weight = 3
+@task
+def list_meals(self):
+    self.client.get('/api/meals/')
 
-    @task(3)
-    def list_meals(self):
-        self.client.get('/api/meals/')
+
+class UnauthorizedTaskSet(TaskSet):
 
     @task
     def create_meals_unauthorized(self):
@@ -21,10 +20,21 @@ class AnonymousUser(HttpUser):
 
             req.success()
 
+    @task
+    def stop(self):
+        self.interrupt(reschedule=True)
+
+
+class AnonymousUser(HttpUser):
+    wait_time = constant(1)
+    weight = 3
+    tasks = [list_meals, UnauthorizedTaskSet]
+
 
 class MyFoodUser(HttpUser):
     wait_time = between(1, 5)
     faker = faker.Faker()
+    tasks = [list_meals]
 
     def on_start(self):
         req = self.client.post(
@@ -36,10 +46,6 @@ class MyFoodUser(HttpUser):
         )
         token = req.json().get('access')
         self.client.headers.update({'Authorization': f'Bearer {token}'})
-
-    @task(3)
-    def list_meals(self):
-        self.client.get('/api/meals/')
 
     @task
     def create_meal(self):
