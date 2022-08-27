@@ -1,6 +1,16 @@
-from locust import HttpUser, between, constant, task, TaskSet
+from locust import HttpUser, between, constant, task, TaskSet, events
 import logging
 import faker
+
+
+@events.test_start.add_listener
+def on_test_start(environment, **kwargs):
+    logging.info('Estou começando os meus testes de carga')
+
+
+@events.test_stop.add_listener
+def on_test_start(environment, **kwargs):
+    logging.info('Estou encerrando os meus testes de carga')
 
 
 @task
