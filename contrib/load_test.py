@@ -73,8 +73,8 @@ class MyFoodUser(HttpUser):
         response = self.client.post(
             'token/',
             json={
-                'username': 'cliente',
-                'password': 'help1234'
+                'username': 'foo',
+                'password': 'bar'
             }
         )
         # set 'token' from response body
