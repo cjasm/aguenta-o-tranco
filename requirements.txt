@@ -2,5 +2,6 @@ Django==4.0.6
 django-model-utils==4.2.0
 djangorestframework==3.13.1
 djangorestframework-simplejwt==5.2.0
+Faker==13.15.1
 invokust==0.76
 python-decouple==3.6
